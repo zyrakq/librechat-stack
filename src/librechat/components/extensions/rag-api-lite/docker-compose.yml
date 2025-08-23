@@ -1,0 +1,63 @@
+services:
+  librechat:
+    environment:
+      SEARCH: ${SEARCH:-false}
+      LIBRECHAT_INTERFACE_FILESEARCH: ${LIBRECHAT_INTERFACE_FILESEARCH:-true}
+      LIBRECHAT_INTERFACE_FILECITATIONS: ${LIBRECHAT_INTERFACE_FILECITATIONS:-true}
+      RAG_API_URL: ${RAG_API_URL:-"http://librechat-rag-api-lite:8000"}
+    depends_on:
+      - librechat-rag-api-lite
+    networks:
+      - librechat-rag-network
+
+  librechat-vectordb:
+    container_name: librechat-vectordb
+    image: pgvector/pgvector:0.8.0-pg15-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-librechat}
+      POSTGRES_USER: ${POSTGRES_USER:-myuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 10m
+        max-file: 3
+    volumes:
+      - librechat-vector-data:/var/lib/postgresql/data
+    networks:
+      - librechat-vector-network
+
+  librechat-rag-api-lite:
+    container_name: librechat-rag-api-lite
+    image: ghcr.io/danny-avila/librechat-rag-api-dev-lite:latest
+    restart: unless-stopped
+    environment:
+      DB_HOST: librechat-vectordb
+      RAG_PORT: ${RAG_PORT:-8000}
+      POSTGRES_DB: ${POSTGRES_DB:-librechat}
+      POSTGRES_USER: ${POSTGRES_USER:-myuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      EMBEDDINGS_PROVIDER: ${EMBEDDINGS_PROVIDER:-openai}
+      EMBEDDINGS_MODEL: ${EMBEDDINGS_MODEL:-text-embedding-3-small}
+      RAG_OPENAI_API_KEY: ${RAG_OPENAI_API_KEY}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 10m
+        max-file: 3
+    depends_on:
+      - librechat-vectordb
+    networks:
+      - librechat-vector-network
+      - librechat-rag-network
+
+volumes:
+  librechat-vector-data:
+    name: librechat-vector-data
+
+networks:
+  librechat-vector-network:
+    name: librechat-vector-network
+  librechat-rag-network:
+    name: librechat-rag-network

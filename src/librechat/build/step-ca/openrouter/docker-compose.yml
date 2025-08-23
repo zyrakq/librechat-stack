@@ -1,0 +1,95 @@
+services:
+  librechat:
+    container_name: librechat
+    image: localhost/librechat
+    restart: unless-stopped
+    environment:
+      # Core LibreChat environment variables
+      HOST: ${HOST:-0.0.0.0}
+      MONGO_URI: ${MONGO_URI:-"mongodb://librechat-mongodb:27017/LibreChat"}
+      CREDS_KEY: ${CREDS_KEY}
+      CREDS_IV: ${CREDS_IV}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-true}
+      SEARCH: ${SEARCH:-false}
+      # LibreChat configuration variables
+      LIBRECHAT_VERSION: ${LIBRECHAT_VERSION:-1.2.1}
+      LIBRECHAT_CACHE: ${LIBRECHAT_CACHE:-true}
+      # Interface configuration
+      LIBRECHAT_INTERFACE_CUSTOMWELCOME: ${LIBRECHAT_INTERFACE_CUSTOMWELCOME:-'Welcome to LibreChat! Enjoy your experience.'}
+      LIBRECHAT_INTERFACE_ENDPOINTSMENU: ${LIBRECHAT_INTERFACE_ENDPOINTSMENU:-true}
+      LIBRECHAT_INTERFACE_MODELSELECT: ${LIBRECHAT_INTERFACE_MODELSELECT:-true}
+      LIBRECHAT_INTERFACE_PARAMETERS: ${LIBRECHAT_INTERFACE_PARAMETERS:-true}
+      LIBRECHAT_INTERFACE_SIDEPANEL: ${LIBRECHAT_INTERFACE_SIDEPANEL:-true}
+      LIBRECHAT_INTERFACE_PRESETS: ${LIBRECHAT_INTERFACE_PRESETS:-true}
+      LIBRECHAT_INTERFACE_PROMPTS: ${LIBRECHAT_INTERFACE_PROMPTS:-true}
+      LIBRECHAT_INTERFACE_BOOKMARKS: ${LIBRECHAT_INTERFACE_BOOKMARKS:-true}
+      LIBRECHAT_INTERFACE_MULTICONVO: ${LIBRECHAT_INTERFACE_MULTICONVO:-true}
+      LIBRECHAT_INTERFACE_AGENTS: ${LIBRECHAT_INTERFACE_AGENTS:-true}
+      # People picker
+      LIBRECHAT_INTERFACE_PEOPLEPICKER_USERS: ${LIBRECHAT_INTERFACE_PEOPLEPICKER_USERS:-true}
+      LIBRECHAT_INTERFACE_PEOPLEPICKER_GROUPS: ${LIBRECHAT_INTERFACE_PEOPLEPICKER_GROUPS:-true}
+      LIBRECHAT_INTERFACE_PEOPLEPICKER_ROLES: ${LIBRECHAT_INTERFACE_PEOPLEPICKER_ROLES:-true}
+      # Marketplace
+      LIBRECHAT_INTERFACE_MARKETPLACE_USE: ${LIBRECHAT_INTERFACE_MARKETPLACE_USE:-false}
+      # Registration
+      LIBRECHAT_REGISTRATION_SOCIALLOGINS: ${LIBRECHAT_REGISTRATION_SOCIALLOGINS}
+      # Actions
+      LIBRECHAT_ACTIONS_ALLOWEDDOMAINS: ${LIBRECHAT_ACTIONS_ALLOWEDDOMAINS}
+      # Agents endpoint
+      LIBRECHAT_ENDPOINTS_AGENTS_CAPABILITIES: ${LIBRECHAT_ENDPOINTS_AGENTS_CAPABILITIES:-'"actions", "tools"'}
+      VIRTUAL_PORT: ${VIRTUAL_PORT:-3080}
+      VIRTUAL_HOST: ${VIRTUAL_HOST}
+      LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+      OPENROUTER_KEY: ${OPENROUTER_KEY}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_NAME: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_NAME:-'OpenRouter'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_APIKEY: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_APIKEY:-"${OPENROUTER_KEY}"}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_BASEURL: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_BASEURL:-'https://openrouter.ai/api/v1'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_HEADERS: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_HEADERS:-'x-librechat-body-parentmessageid:{{LIBRECHAT_BODY_PARENTMESSAGEID}}'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELS_DEFAULT: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELS_DEFAULT:-'anthropic/claude-sonnet-4:online'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELS_FETCH: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELS_FETCH:-true}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_TITLECONVO: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_TITLECONVO:-true}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_TITLEMODEL: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_TITLEMODEL:-'deepseek/deepseek-chat-v3-0324:free'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_DROPPARAMS: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_DROPPARAMS:-'stop'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELDISPLAYLABEL: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELDISPLAYLABEL:-'OpenRouter'}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 10m
+        max-file: 3
+    depends_on:
+      - librechat-mongodb
+    volumes:
+      - librechat-images:/app/client/public/images
+      - librechat-uploads:/app/uploads
+    networks:
+      - librechat-network
+      - step-ca-network
+  librechat-mongodb:
+    container_name: librechat-mongodb
+    image: mongo
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 10m
+        max-file: 3
+    volumes:
+      - librechat-mongodb:/data/db
+    command: mongod --noauth
+    networks:
+      - librechat-network
+networks:
+  librechat-network:
+    name: librechat-network
+  step-ca-network:
+    external: true
+volumes:
+  librechat-images:
+    name: librechat-images
+  librechat-uploads:
+    name: librechat-uploads
+  librechat-mongodb:
+    name: librechat-mongodb

@@ -1,0 +1,295 @@
+{{/* LibreChat Configuration Template */}}
+{{/* Generated from environment variables using gomplate */}}
+
+{{- $data := datasource "data" }}
+{{- if has $data "version" }}
+# Configuration version (required)
+version: {{ $data.version }}
+{{- end }}
+
+{{- if has $data "cache" }}
+# Cache settings
+cache: {{ $data.cache }}
+{{- end }}
+
+{{- if has $data "fileStrategy" }}
+# File storage configuration
+{{- if has $data.fileStrategy "single" }}
+fileStrategy: "{{ $data.fileStrategy.single }}"
+{{- else }}
+fileStrategy:
+{{- if has $data.fileStrategy "avatar" }}
+  avatar: "{{ $data.fileStrategy.avatar }}"
+{{- end }}
+{{- if has $data.fileStrategy "image" }}
+  image: "{{ $data.fileStrategy.image }}"
+{{- end }}
+{{- if has $data.fileStrategy "document" }}
+  document: "{{ $data.fileStrategy.document }}"
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- if has $data "interface" }}
+# Custom interface configuration
+interface:
+{{- if has $data.interface "customWelcome" }}
+  customWelcome: '{{ $data.interface.customWelcome }}'
+{{- end }}
+{{- if has $data.interface "fileSearch" }}
+  fileSearch: {{ $data.interface.fileSearch }}
+{{- end }}
+{{- if has $data.interface "endpointsMenu" }}
+  endpointsMenu: {{ $data.interface.endpointsMenu }}
+{{- end }}
+{{- if has $data.interface "modelSelect" }}
+  modelSelect: {{ $data.interface.modelSelect }}
+{{- end }}
+{{- if has $data.interface "parameters" }}
+  parameters: {{ $data.interface.parameters }}
+{{- end }}
+{{- if has $data.interface "sidePanel" }}
+  sidePanel: {{ $data.interface.sidePanel }}
+{{- end }}
+{{- if has $data.interface "presets" }}
+  presets: {{ $data.interface.presets }}
+{{- end }}
+{{- if has $data.interface "prompts" }}
+  prompts: {{ $data.interface.prompts }}
+{{- end }}
+{{- if has $data.interface "bookmarks" }}
+  bookmarks: {{ $data.interface.bookmarks }}
+{{- end }}
+{{- if has $data.interface "multiConvo" }}
+  multiConvo: {{ $data.interface.multiConvo }}
+{{- end }}
+{{- if has $data.interface "agents" }}
+  agents: {{ $data.interface.agents }}
+{{- end }}
+{{- if has $data.interface "fileCitations" }}
+  fileCitations: {{ $data.interface.fileCitations }}
+{{- end }}
+{{- if has $data.interface "temporaryChatRetention" }}
+  temporaryChatRetention: {{ $data.interface.temporaryChatRetention }}
+{{- end }}
+
+{{- if has $data.interface "privacyPolicy" }}
+  # Privacy policy settings
+  privacyPolicy:
+{{- if has $data.interface.privacyPolicy "externalUrl" }}
+    externalUrl: '{{ $data.interface.privacyPolicy.externalUrl }}'
+{{- end }}
+{{- if has $data.interface.privacyPolicy "openNewTab" }}
+    openNewTab: {{ $data.interface.privacyPolicy.openNewTab }}
+{{- end }}
+{{- end }}
+
+{{- if has $data.interface "termsOfService" }}
+  # Terms of service
+  termsOfService:
+{{- if has $data.interface.termsOfService "externalUrl" }}
+    externalUrl: '{{ $data.interface.termsOfService.externalUrl }}'
+{{- end }}
+{{- if has $data.interface.termsOfService "openNewTab" }}
+    openNewTab: {{ $data.interface.termsOfService.openNewTab }}
+{{- end }}
+{{- if has $data.interface.termsOfService "modalAcceptance" }}
+    modalAcceptance: {{ $data.interface.termsOfService.modalAcceptance }}
+{{- end }}
+{{- if has $data.interface.termsOfService "modalTitle" }}
+    modalTitle: '{{ $data.interface.termsOfService.modalTitle }}'
+{{- end }}
+{{- if has $data.interface.termsOfService "modalContent" }}
+    modalContent: |
+{{ $data.interface.termsOfService.modalContent }}
+{{- end }}
+{{- end }}
+
+{{- if has $data.interface "peoplePicker" }}
+  # People picker
+  peoplePicker:
+{{- if has $data.interface.peoplePicker "users" }}
+    users: {{ $data.interface.peoplePicker.users }}
+{{- end }}
+{{- if has $data.interface.peoplePicker "groups" }}
+    groups: {{ $data.interface.peoplePicker.groups }}
+{{- end }}
+{{- if has $data.interface.peoplePicker "roles" }}
+    roles: {{ $data.interface.peoplePicker.roles }}
+{{- end }}
+{{- end }}
+
+{{- if has $data.interface "marketplace" }}
+  # Marketplace
+  marketplace:
+    use: {{ $data.interface.marketplace.use }}
+{{- end }}
+{{- end }}
+
+{{- if has $data "turnstile" }}
+# Cloudflare turnstile
+turnstile:
+{{- if has $data.turnstile "siteKey" }}
+  siteKey: "{{ $data.turnstile.siteKey }}"
+{{- end }}
+{{- if has $data.turnstile "options" }}
+  options:
+{{- if has $data.turnstile.options "language" }}
+    language: "{{ $data.turnstile.options.language }}"
+{{- end }}
+{{- if has $data.turnstile.options "size" }}
+    size: "{{ $data.turnstile.options.size }}"
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- if has $data "registration" }}
+# Registration configuration
+registration:
+{{- if has $data.registration "socialLogins" }}
+  socialLogins: [{{- range $i, $v := $data.registration.socialLogins }}{{- if $i }}, {{ end }}{{ $v | toJSON }}{{- end }}]
+{{- end }}
+{{- if has $data.registration "allowedDomains" }}
+  allowedDomains:
+{{- range $data.registration.allowedDomains }}
+    - "{{ . }}"
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- if has $data "balance" }}
+# Balance settings
+balance:
+{{- if has $data.balance "enabled" }}
+  enabled: {{ $data.balance.enabled }}
+{{- end }}
+{{- if has $data.balance "startBalance" }}
+  startBalance: {{ $data.balance.startBalance }}
+{{- end }}
+{{- if has $data.balance "autoRefillEnabled" }}
+  autoRefillEnabled: {{ $data.balance.autoRefillEnabled }}
+{{- end }}
+{{- if has $data.balance "refillIntervalValue" }}
+  refillIntervalValue: {{ $data.balance.refillIntervalValue }}
+{{- end }}
+{{- if has $data.balance "refillIntervalUnit" }}
+  refillIntervalUnit: '{{ $data.balance.refillIntervalUnit }}'
+{{- end }}
+{{- if has $data.balance "refillAmount" }}
+  refillAmount: {{ $data.balance.refillAmount }}
+{{- end }}
+{{- end }}
+
+{{- if has $data "actions" }}
+# Actions configuration
+actions:
+{{- if has $data.actions "allowedDomains" }}
+  allowedDomains:
+{{- range $data.actions.allowedDomains }}
+    - '{{ . }}'
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- if has $data "endpoints" }}
+# Definition of endpoints
+endpoints:
+{{- if has $data.endpoints "assistants" }}
+  assistants:
+{{- if has $data.endpoints.assistants "disableBuilder" }}
+    disableBuilder: {{ $data.endpoints.assistants.disableBuilder }}
+{{- end }}
+{{- if has $data.endpoints.assistants "pollIntervalMs" }}
+    pollIntervalMs: {{ $data.endpoints.assistants.pollIntervalMs }}
+{{- end }}
+{{- if has $data.endpoints.assistants "timeoutMs" }}
+    timeoutMs: {{ $data.endpoints.assistants.timeoutMs }}
+{{- end }}
+{{- if has $data.endpoints.assistants "privateAssistants" }}
+    privateAssistants: {{ $data.endpoints.assistants.privateAssistants }}
+{{- end }}
+{{- if has $data.endpoints.assistants "supportedIds" }}
+    supportedIds: [{{- range $i, $v := $data.endpoints.assistants.supportedIds }}{{- if $i }}, {{ end }}{{ $v | toJSON }}{{- end }}]
+{{- end }}
+{{- if has $data.endpoints.assistants "excludedIds" }}
+    excludedIds: [{{- range $i, $v := $data.endpoints.assistants.excludedIds }}{{- if $i }}, {{ end }}{{ $v | toJSON }}{{- end }}]
+{{- end }}
+{{- if has $data.endpoints.assistants "retrievalModels" }}
+    retrievalModels: [{{- range $i, $v := $data.endpoints.assistants.retrievalModels }}{{- if $i }}, {{ end }}{{ $v | toJSON }}{{- end }}]
+{{- end }}
+{{- if has $data.endpoints.assistants "capabilities" }}
+    capabilities: [{{- range $i, $v := $data.endpoints.assistants.capabilities }}{{- if $i }}, {{ end }}{{ $v | toJSON }}{{- end }}]
+{{- end }}
+{{- end }}
+
+{{- if has $data.endpoints "agents" }}
+  agents:
+{{- if has $data.endpoints.agents "recursionLimit" }}
+    recursionLimit: {{ $data.endpoints.agents.recursionLimit }}
+{{- end }}
+{{- if has $data.endpoints.agents "maxRecursionLimit" }}
+    maxRecursionLimit: {{ $data.endpoints.agents.maxRecursionLimit }}
+{{- end }}
+{{- if has $data.endpoints.agents "disableBuilder" }}
+    disableBuilder: {{ $data.endpoints.agents.disableBuilder }}
+{{- end }}
+{{- if has $data.endpoints.agents "maxCitations" }}
+    maxCitations: {{ $data.endpoints.agents.maxCitations }}
+{{- end }}
+{{- if has $data.endpoints.agents "maxCitationsPerFile" }}
+    maxCitationsPerFile: {{ $data.endpoints.agents.maxCitationsPerFile }}
+{{- end }}
+{{- if has $data.endpoints.agents "minRelevanceScore" }}
+    minRelevanceScore: {{ $data.endpoints.agents.minRelevanceScore }}
+{{- end }}
+{{- if has $data.endpoints.agents "capabilities" }}
+    capabilities: [{{- range $i, $v := $data.endpoints.agents.capabilities }}{{- if $i }}, {{ end }}{{ $v | toJSON }}{{- end }}]
+{{- end }}
+{{- end }}
+
+{{- if has $data.endpoints "custom" }}
+  custom:
+{{- range $data.endpoints.custom }}
+    - name: '{{ .name }}'
+{{- if has . "apiKey" }}
+      apiKey: '{{ .apiKey }}'
+{{- end }}
+{{- if has . "baseURL" }}
+      baseURL: '{{ .baseURL }}'
+{{- end }}
+{{- if has . "titleModel" }}
+      titleModel: '{{ .titleModel }}'
+{{- end }}
+{{- if has . "modelDisplayLabel" }}
+      modelDisplayLabel: '{{ .modelDisplayLabel }}'
+{{- end }}
+{{- if has . "titleConvo" }}
+      titleConvo: {{ .titleConvo }}
+{{- end }}
+{{- if has . "summarize" }}
+      summarize: {{ .summarize }}
+{{- end }}
+{{- if has . "forcePrompt" }}
+      forcePrompt: {{ .forcePrompt }}
+{{- end }}
+{{- if has . "headers" }}
+      headers:
+{{- range $key, $value := .headers }}
+        {{ $key }}: {{ $value | toJSON }}
+{{- end }}
+{{- end }}
+{{- if has . "models" }}
+      models:
+{{- if has .models "default" }}
+        default: [{{- range $i, $v := .models.default }}{{- if $i }}, {{ end }}{{ $v | toJSON }}{{- end }}]
+{{- end }}
+{{- if has .models "fetch" }}
+        fetch: {{ .models.fetch }}
+{{- end }}
+{{- end }}
+{{- if has . "dropParams" }}
+      dropParams: [{{- range $i, $v := .dropParams }}{{- if $i }}, {{ end }}{{ $v | toJSON }}{{- end }}]
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

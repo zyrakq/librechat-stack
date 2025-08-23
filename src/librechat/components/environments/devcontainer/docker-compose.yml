@@ -1,0 +1,8 @@
+services:
+  librechat:
+    networks:
+      - librechat-workspace-network
+
+networks:
+  librechat-workspace-network:
+    external: true

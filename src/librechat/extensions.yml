@@ -1,0 +1,37 @@
+version: "1.0"
+groups:
+  auth:
+    description: "Authentication services"
+    extensions:
+      - oidc
+  step-ca:
+    description: "smallstep-ca"
+    extensions:
+      - step-ca-trust
+  storage:
+    description: "Storage"
+    extensions:
+      - rag-api-huggingface
+  providers:
+    description: "LLM Providers"
+    extensions:
+      - openrouter
+
+conflicts:
+combinations:
+  - name: "full"
+    extensions: ["rag-api-huggingface", "openrouter"]
+    description: "-"
+
+  - name: "full+step-ca-trust"
+    extensions: ["rag-api-huggingface", "openrouter", "step-ca-trust"]
+    description: "-"
+
+naming:
+  separator: "+"
+  sort: true
+
+metadata:
+  created: "2025-01-20"
+  description: "Extension compatibility configuration for Librechat modular system"
+  author: "Librechat Stack"

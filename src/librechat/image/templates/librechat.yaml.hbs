@@ -1,0 +1,294 @@
+{{!-- LibreChat Configuration Template --}}
+{{!-- Generated from environment variables using Handlebars --}}
+
+{{#if version}}
+# Configuration version (required)
+version: {{version}}
+{{/if}}
+
+{{#if cache}}
+# Cache settings
+cache: {{cache}}
+{{/if}}
+
+{{#if fileStrategy}}
+# File storage configuration
+{{#if fileStrategy.single}}
+fileStrategy: "{{fileStrategy.single}}"
+{{else}}
+fileStrategy:
+{{#if fileStrategy.avatar}}
+  avatar: "{{fileStrategy.avatar}}"
+{{/if}}
+{{#if fileStrategy.image}}
+  image: "{{fileStrategy.image}}"
+{{/if}}
+{{#if fileStrategy.document}}
+  document: "{{fileStrategy.document}}"
+{{/if}}
+{{/if}}
+{{/if}}
+
+{{#if interface}}
+# Custom interface configuration
+interface:
+{{#if interface.customWelcome}}
+  customWelcome: '{{interface.customWelcome}}'
+{{/if}}
+{{#if interface.fileSearch}}
+  fileSearch: {{interface.fileSearch}}
+{{/if}}
+{{#if interface.endpointsMenu}}
+  endpointsMenu: {{interface.endpointsMenu}}
+{{/if}}
+{{#if interface.modelSelect}}
+  modelSelect: {{interface.modelSelect}}
+{{/if}}
+{{#if interface.parameters}}
+  parameters: {{interface.parameters}}
+{{/if}}
+{{#if interface.sidePanel}}
+  sidePanel: {{interface.sidePanel}}
+{{/if}}
+{{#if interface.presets}}
+  presets: {{interface.presets}}
+{{/if}}
+{{#if interface.prompts}}
+  prompts: {{interface.prompts}}
+{{/if}}
+{{#if interface.bookmarks}}
+  bookmarks: {{interface.bookmarks}}
+{{/if}}
+{{#if interface.multiConvo}}
+  multiConvo: {{interface.multiConvo}}
+{{/if}}
+{{#if interface.agents}}
+  agents: {{interface.agents}}
+{{/if}}
+{{#if interface.fileCitations}}
+  fileCitations: {{interface.fileCitations}}
+{{/if}}
+{{#if interface.temporaryChatRetention}}
+  temporaryChatRetention: {{interface.temporaryChatRetention}}
+{{/if}}
+
+{{#if interface.privacyPolicy}}
+  # Privacy policy settings
+  privacyPolicy:
+{{#if interface.privacyPolicy.externalUrl}}
+    externalUrl: '{{interface.privacyPolicy.externalUrl}}'
+{{/if}}
+{{#if interface.privacyPolicy.openNewTab}}
+    openNewTab: {{interface.privacyPolicy.openNewTab}}
+{{/if}}
+{{/if}}
+
+{{#if interface.termsOfService}}
+  # Terms of service
+  termsOfService:
+{{#if interface.termsOfService.externalUrl}}
+    externalUrl: '{{interface.termsOfService.externalUrl}}'
+{{/if}}
+{{#if interface.termsOfService.openNewTab}}
+    openNewTab: {{interface.termsOfService.openNewTab}}
+{{/if}}
+{{#if interface.termsOfService.modalAcceptance}}
+    modalAcceptance: {{interface.termsOfService.modalAcceptance}}
+{{/if}}
+{{#if interface.termsOfService.modalTitle}}
+    modalTitle: '{{interface.termsOfService.modalTitle}}'
+{{/if}}
+{{#if interface.termsOfService.modalContent}}
+    modalContent: |
+{{interface.termsOfService.modalContent}}
+{{/if}}
+{{/if}}
+
+{{#if interface.peoplePicker}}
+  # People picker
+  peoplePicker:
+{{#if interface.peoplePicker.users}}
+    users: {{interface.peoplePicker.users}}
+{{/if}}
+{{#if interface.peoplePicker.groups}}
+    groups: {{interface.peoplePicker.groups}}
+{{/if}}
+{{#if interface.peoplePicker.roles}}
+    roles: {{interface.peoplePicker.roles}}
+{{/if}}
+{{/if}}
+
+{{#if interface.marketplace}}
+  # Marketplace
+  marketplace:
+    use: {{interface.marketplace.use}}
+{{/if}}
+{{/if}}
+
+{{#if turnstile}}
+# Cloudflare turnstile
+turnstile:
+{{#if turnstile.siteKey}}
+  siteKey: "{{turnstile.siteKey}}"
+{{/if}}
+{{#if turnstile.options}}
+  options:
+{{#if turnstile.options.language}}
+    language: "{{turnstile.options.language}}"
+{{/if}}
+{{#if turnstile.options.size}}
+    size: "{{turnstile.options.size}}"
+{{/if}}
+{{/if}}
+{{/if}}
+
+{{#if registration}}
+# Registration configuration
+registration:
+{{#if registration.socialLogins}}
+  socialLogins: [{{#each registration.socialLogins}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}]
+{{/if}}
+{{#if registration.allowedDomains}}
+  allowedDomains:
+{{#each registration.allowedDomains}}
+    - "{{this}}"
+{{/each}}
+{{/if}}
+{{/if}}
+
+{{#if balance}}
+# Balance settings
+balance:
+{{#if balance.enabled}}
+  enabled: {{balance.enabled}}
+{{/if}}
+{{#if balance.startBalance}}
+  startBalance: {{balance.startBalance}}
+{{/if}}
+{{#if balance.autoRefillEnabled}}
+  autoRefillEnabled: {{balance.autoRefillEnabled}}
+{{/if}}
+{{#if balance.refillIntervalValue}}
+  refillIntervalValue: {{balance.refillIntervalValue}}
+{{/if}}
+{{#if balance.refillIntervalUnit}}
+  refillIntervalUnit: '{{balance.refillIntervalUnit}}'
+{{/if}}
+{{#if balance.refillAmount}}
+  refillAmount: {{balance.refillAmount}}
+{{/if}}
+{{/if}}
+
+{{#if actions}}
+# Actions configuration
+actions:
+{{#if actions.allowedDomains}}
+  allowedDomains:
+{{#each actions.allowedDomains}}
+    - '{{this}}'
+{{/each}}
+{{/if}}
+{{/if}}
+
+{{#if endpoints}}
+# Definition of endpoints
+endpoints:
+{{#if endpoints.assistants}}
+  assistants:
+{{#if endpoints.assistants.disableBuilder}}
+    disableBuilder: {{endpoints.assistants.disableBuilder}}
+{{/if}}
+{{#if endpoints.assistants.pollIntervalMs}}
+    pollIntervalMs: {{endpoints.assistants.pollIntervalMs}}
+{{/if}}
+{{#if endpoints.assistants.timeoutMs}}
+    timeoutMs: {{endpoints.assistants.timeoutMs}}
+{{/if}}
+{{#if endpoints.assistants.privateAssistants}}
+    privateAssistants: {{endpoints.assistants.privateAssistants}}
+{{/if}}
+{{#if endpoints.assistants.supportedIds}}
+    supportedIds: [{{#each endpoints.assistants.supportedIds}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}]
+{{/if}}
+{{#if endpoints.assistants.excludedIds}}
+    excludedIds: [{{#each endpoints.assistants.excludedIds}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}]
+{{/if}}
+{{#if endpoints.assistants.retrievalModels}}
+    retrievalModels: [{{#each endpoints.assistants.retrievalModels}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}]
+{{/if}}
+{{#if endpoints.assistants.capabilities}}
+    capabilities: [{{#each endpoints.assistants.capabilities}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}]
+{{/if}}
+{{/if}}
+
+{{#if endpoints.agents}}
+  agents:
+{{#if endpoints.agents.recursionLimit}}
+    recursionLimit: {{endpoints.agents.recursionLimit}}
+{{/if}}
+{{#if endpoints.agents.maxRecursionLimit}}
+    maxRecursionLimit: {{endpoints.agents.maxRecursionLimit}}
+{{/if}}
+{{#if endpoints.agents.disableBuilder}}
+    disableBuilder: {{endpoints.agents.disableBuilder}}
+{{/if}}
+{{#if endpoints.agents.maxCitations}}
+    maxCitations: {{endpoints.agents.maxCitations}}
+{{/if}}
+{{#if endpoints.agents.maxCitationsPerFile}}
+    maxCitationsPerFile: {{endpoints.agents.maxCitationsPerFile}}
+{{/if}}
+{{#if endpoints.agents.minRelevanceScore}}
+    minRelevanceScore: {{endpoints.agents.minRelevanceScore}}
+{{/if}}
+{{#if endpoints.agents.capabilities}}
+    capabilities: [{{#each endpoints.agents.capabilities}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}]
+{{/if}}
+{{/if}}
+
+{{#if endpoints.custom}}
+  custom:
+{{#each endpoints.custom}}
+    - name: '{{name}}'
+{{#if apiKey}}
+      apiKey: '{{apiKey}}'
+{{/if}}
+{{#if baseURL}}
+      baseURL: '{{baseURL}}'
+{{/if}}
+{{#if titleModel}}
+      titleModel: '{{titleModel}}'
+{{/if}}
+{{#if modelDisplayLabel}}
+      modelDisplayLabel: '{{modelDisplayLabel}}'
+{{/if}}
+{{#if titleConvo}}
+      titleConvo: {{titleConvo}}
+{{/if}}
+{{#if summarize}}
+      summarize: {{summarize}}
+{{/if}}
+{{#if forcePrompt}}
+      forcePrompt: {{forcePrompt}}
+{{/if}}
+{{#if headers}}
+      headers:
+{{#each headers}}
+        {{@key}}: '{{this}}'
+{{/each}}
+{{/if}}
+{{#if models}}
+      models:
+{{#if models.default}}
+        default: [{{#each models.default}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}]
+{{/if}}
+{{#if models.fetch}}
+        fetch: {{models.fetch}}
+{{/if}}
+{{/if}}
+{{#if dropParams}}
+      dropParams: [{{#each dropParams}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}]
+{{/if}}
+{{/each}}
+{{/if}}
+{{/if}}
