@@ -1,0 +1,6 @@
+services:
+  librechat:
+    environment:
+      ASSISTANTS_BASE_URL: ${ASSISTANTS_BASE_URL:-}
+      ASSISTANTS_MODELS: ${ASSISTANTS_MODELS:-}
+      ASSISTANTS_API_KEY: ${ASSISTANTS_API_KEY}

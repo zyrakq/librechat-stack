@@ -6,6 +6,7 @@ extensions_dirs = ["extensions", "extensions/rag", "extensions/providers"]
 
 skip_base_generation = true
 extensions = [
+    "assistant",
     "rag-api-huggingface",
     "rag-api-lite",
     "openrouter",
@@ -20,22 +21,23 @@ extensions = [
     "rag-api-huggingface",
     "step-ca-trust",
 ]
+"assistant-trust" = ["assistant", "step-ca-trust"]
 
 [build.environments]
 available = ["devcontainer", "forwarding", "letsencrypt", "step-ca"]
 
 [build.environments.devcontainer]
-extensions = []
+extensions = ["assistant"]
 combos = ["openrouter+rag-api-huggingface"]
 
 [build.environments.forwarding]
-extensions = []
+extensions = ["assistant"]
 combos = ["openrouter+rag-api-huggingface"]
 
 [build.environments.letsencrypt]
-extensions = []
+extensions = ["assistant"]
 combos = ["openrouter+rag-api-huggingface"]
 
 [build.environments.step-ca]
 extensions = []
-combos = ["openrouter+rag-api-huggingface-trust"]
+combos = ["assistant-trust", "openrouter+rag-api-huggingface-trust"]
