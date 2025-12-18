@@ -43,13 +43,24 @@ services:
       VIRTUAL_HOST: ${VIRTUAL_HOST}
       LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
-      ENABLE_OAUTH_SIGNUP: ${ENABLE_OAUTH_SIGNUP}
-      OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID}
-      OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET}
-      OPENID_PROVIDER_URL: ${OPENID_PROVIDER_URL}
-      OAUTH_PROVIDER_NAME: ${OAUTH_PROVIDER_NAME}
-      OPENID_REDIRECT_URI: ${OPENID_REDIRECT_URI}
-      OAUTH_GROUPS_CLAIM: ${OAUTH_GROUPS_CLAIM}
+      OPENROUTER_KEY: ${OPENROUTER_KEY}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_NAME: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_NAME:-'OpenRouter'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_APIKEY: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_APIKEY:-"${OPENROUTER_KEY}"}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_BASEURL: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_BASEURL:-'https://openrouter.ai/api/v1'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_HEADERS: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_HEADERS:-'x-librechat-body-parentmessageid:{{LIBRECHAT_BODY_PARENTMESSAGEID}}'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELS_DEFAULT: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELS_DEFAULT:-'anthropic/claude-sonnet-4:online'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELS_FETCH: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELS_FETCH:-true}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_TITLECONVO: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_TITLECONVO:-true}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_TITLEMODEL: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_TITLEMODEL:-'deepseek/deepseek-chat-v3-0324:free'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_DROPPARAMS: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_DROPPARAMS:-'stop'}
+      LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELDISPLAYLABEL: ${LIBRECHAT_ENDPOINTS_CUSTOM_0_MODELDISPLAYLABEL:-'OpenRouter'}
+      LIBRECHAT_INTERFACE_FILESEARCH: ${LIBRECHAT_INTERFACE_FILESEARCH:-true}
+      LIBRECHAT_INTERFACE_FILECITATIONS: ${LIBRECHAT_INTERFACE_FILECITATIONS:-true}
+      RAG_API_URL: ${RAG_API_URL:-"http://librechat-rag-api:8000"}
+      STEP_CA_TRUST: ${STEP_CA_TRUST:-true}
+      STEP_CA_TRUST_RESTART: ${STEP_CA_TRUST_RESTART:-true}
+      REQUESTS_CA_BUNDLE: ${REQUESTS_CA_BUNDLE:-/etc/ssl/certs/ca-certificates.crt}
+      SSL_CERT_FILE: ${SSL_CERT_FILE:-/etc/ssl/certs/ca-certificates.crt}
     logging:
       driver: "json-file"
       options:
@@ -57,12 +68,14 @@ services:
         max-file: 3
     depends_on:
       - librechat-mongodb
+      - librechat-rag-api
     volumes:
       - librechat-images:/app/client/public/images
       - librechat-uploads:/app/uploads
     networks:
       - librechat-network
       - step-ca-network
+      - librechat-rag-network
   librechat-mongodb:
     container_name: librechat-mongodb
     image: mongo
@@ -77,11 +90,54 @@ services:
     command: mongod --noauth
     networks:
       - librechat-network
+  librechat-vectordb:
+    container_name: librechat-vectordb
+    image: pgvector/pgvector:0.8.0-pg15-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-librechat}
+      POSTGRES_USER: ${POSTGRES_USER:-myuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 10m
+        max-file: 3
+    volumes:
+      - librechat-vector-data:/var/lib/postgresql/data
+    networks:
+      - librechat-vector-network
+  librechat-rag-api:
+    container_name: librechat-rag-api
+    image: ghcr.io/danny-avila/librechat-rag-api-dev:latest
+    restart: unless-stopped
+    environment:
+      DB_HOST: librechat-vectordb
+      RAG_PORT: ${RAG_PORT:-8000}
+      POSTGRES_DB: ${POSTGRES_DB:-librechat}
+      POSTGRES_USER: ${POSTGRES_USER:-myuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      EMBEDDINGS_PROVIDER: ${EMBEDDINGS_PROVIDER:-huggingface}
+      EMBEDDINGS_MODEL: ${EMBEDDINGS_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 10m
+        max-file: 3
+    depends_on:
+      - librechat-vectordb
+    networks:
+      - librechat-vector-network
+      - librechat-rag-network
 networks:
   librechat-network:
     name: librechat-network
   step-ca-network:
     external: true
+  librechat-vector-network:
+    name: librechat-vector-network
+  librechat-rag-network:
+    name: librechat-rag-network
 volumes:
   librechat-images:
     name: librechat-images
@@ -89,3 +145,5 @@ volumes:
     name: librechat-uploads
   librechat-mongodb:
     name: librechat-mongodb
+  librechat-vector-data:
+    name: librechat-vector-data

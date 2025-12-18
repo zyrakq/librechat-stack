@@ -1,0 +1,41 @@
+[paths]
+environments_path = "./environments"
+extensions_dirs = ["extensions", "extensions/rag", "extensions/providers"]
+
+[build]
+
+skip_base_generation = true
+extensions = [
+    "rag-api-huggingface",
+    "rag-api-lite",
+    "openrouter",
+    "oidc",
+    "step-ca-trust",
+]
+
+[build.combos]
+"openrouter+rag-api-huggingface" = ["openrouter", "rag-api-huggingface"]
+"openrouter+rag-api-huggingface-trust" = [
+    "openrouter",
+    "rag-api-huggingface",
+    "step-ca-trust",
+]
+
+[build.environments]
+available = ["devcontainer", "forwarding", "letsencrypt", "step-ca"]
+
+[build.environments.devcontainer]
+extensions = []
+combos = ["openrouter+rag-api-huggingface"]
+
+[build.environments.forwarding]
+extensions = []
+combos = ["openrouter+rag-api-huggingface"]
+
+[build.environments.letsencrypt]
+extensions = []
+combos = ["openrouter+rag-api-huggingface"]
+
+[build.environments.step-ca]
+extensions = []
+combos = ["openrouter+rag-api-huggingface-trust"]
